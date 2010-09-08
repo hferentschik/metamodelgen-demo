@@ -28,24 +28,69 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class EntityManagerIllustrationTest extends TestCase {
+public class CriteriaQueryTest extends TestCase {
 	private EntityManagerFactory entityManagerFactory;
+	private static final Logger log = LoggerFactory.getLogger( CriteriaQueryTest.class );
 
 	@Override
 	protected void setUp() throws Exception {
-		// like discussed with regards to SessionFactory, an EntityManagerFactory is set up once for an application
-		entityManagerFactory = Persistence.createEntityManagerFactory( "hibernate-jpa-tutorial" );
+		entityManagerFactory = Persistence.createEntityManagerFactory( "jpa2-demo" );
+		createTestData();
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
+		deleteTestData();
 		entityManagerFactory.close();
 	}
 
 	public void testBasicUsage() {
+		// let's pull events from the database and list them
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		entityManager.getTransaction().begin();
+
+		List<Event> result = entityManager.createQuery( "from Event where title like '%follow%' ", Event.class ).getResultList();
+		assertTrue( result.size() == 1 );
+		for ( Event event : result ) {
+			log.debug( "Event (" + event.getDate() + ") : " + event.getTitle() );
+		}
+
+		entityManager.getTransaction().commit();
+		entityManager.close();
+	}
+
+
+	public void testTypeSafeCriteriaApi() {
+		// let's do a type safe criteria query
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		entityManager.getTransaction().begin();
+
+		CriteriaBuilder queryBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Event> query = queryBuilder.createQuery( Event.class );
+		Root<Event> event = query.from( Event.class );
+		query.where( queryBuilder.like( event.get( Event_.title ), "%follow%" ) );
+
+
+		List<Event> events = entityManager.createQuery( query ).getResultList();
+		assertTrue( events.size() == 1 );
+		for ( Event resultEven : events ) {
+			log.debug( "Event (" + resultEven.getDate() + ") : " + resultEven.getTitle() );
+		}
+
+		entityManager.getTransaction().commit();
+		entityManager.close();
+	}
+
+
+	private void createTestData() {
 		// create a couple of events...
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
@@ -53,13 +98,15 @@ public class EntityManagerIllustrationTest extends TestCase {
 		entityManager.persist( new Event( "A follow up event", new Date() ) );
 		entityManager.getTransaction().commit();
 		entityManager.close();
+	}
 
-		// now lets pull events from the database and list them
-		entityManager = entityManagerFactory.createEntityManager();
+	private void deleteTestData() {
+		// delete all events...
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
 		List<Event> result = entityManager.createQuery( "from Event", Event.class ).getResultList();
 		for ( Event event : result ) {
-			System.out.println( "Event (" + event.getDate() + ") : " + event.getTitle() );
+			entityManager.remove( event );
 		}
 		entityManager.getTransaction().commit();
 		entityManager.close();
