@@ -57,7 +57,8 @@ public class CriteriaQueryTest extends TestCase {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
 
-		List<Event> result = entityManager.createQuery( "from Event where title like '%follow%' ", Event.class ).getResultList();
+		List<Event> result = entityManager.createQuery( "from Event where title like '%follow%' ", Event.class )
+				.getResultList();
 		assertTrue( result.size() == 1 );
 		for ( Event event : result ) {
 			log.debug( "Event (" + event.getDate() + ") : " + event.getTitle() );
@@ -66,7 +67,6 @@ public class CriteriaQueryTest extends TestCase {
 		entityManager.getTransaction().commit();
 		entityManager.close();
 	}
-
 
 	public void testTypeSafeCriteriaApi() {
 		// let's do a type safe criteria query
@@ -81,14 +81,13 @@ public class CriteriaQueryTest extends TestCase {
 
 		List<Event> events = entityManager.createQuery( query ).getResultList();
 		assertTrue( events.size() == 1 );
-		for ( Event resultEven : events ) {
-			log.debug( "Event (" + resultEven.getDate() + ") : " + resultEven.getTitle() );
+		for ( Event resultEvent : events ) {
+			log.debug( "Event (" + resultEvent.getDate() + ") : " + resultEvent.getTitle() );
 		}
 
 		entityManager.getTransaction().commit();
 		entityManager.close();
 	}
-
 
 	private void createTestData() {
 		// create a couple of events...
