@@ -68,27 +68,6 @@ public class CriteriaQueryTest extends TestCase {
 		entityManager.close();
 	}
 
-	public void testTypeSafeCriteriaApi() {
-		// let's do a type safe criteria query
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-		entityManager.getTransaction().begin();
-
-		CriteriaBuilder queryBuilder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<Event> query = queryBuilder.createQuery( Event.class );
-		Root<Event> event = query.from( Event.class );
-		query.where( queryBuilder.like( event.get( Event_.title ), "%follow%" ) );
-
-
-		List<Event> events = entityManager.createQuery( query ).getResultList();
-		assertTrue( events.size() == 1 );
-		for ( Event resultEvent : events ) {
-			log.debug( "Event (" + resultEvent.getDate() + ") : " + resultEvent.getTitle() );
-		}
-
-		entityManager.getTransaction().commit();
-		entityManager.close();
-	}
-
 	private void createTestData() {
 		// create a couple of events...
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -110,4 +89,25 @@ public class CriteriaQueryTest extends TestCase {
 		entityManager.getTransaction().commit();
 		entityManager.close();
 	}
+
+//	public void testTypeSafeCriteriaApi() {
+//		// let's do a type safe criteria query
+//		EntityManager entityManager = entityManagerFactory.createEntityManager();
+//		entityManager.getTransaction().begin();
+//
+//		CriteriaBuilder queryBuilder = entityManager.getCriteriaBuilder();
+//		CriteriaQuery<Event> query = queryBuilder.createQuery( Event.class );
+//		Root<Event> event = query.from( Event.class );
+//		query.where( queryBuilder.like( event.get( Event_.title ), "%follow%" ) );
+//
+//
+//		List<Event> events = entityManager.createQuery( query ).getResultList();
+//		assertTrue( events.size() == 1 );
+//		for ( Event resultEvent : events ) {
+//			log.debug( "Event (" + resultEvent.getDate() + ") : " + resultEvent.getTitle() );
+//		}
+//
+//		entityManager.getTransaction().commit();
+//		entityManager.close();
+//	}
 }
