@@ -39,24 +39,24 @@
             <version>${hibernateVersion}</version>
             <scope>test</scope>
         </dependency>
-        <!--<dependency>-->
-            <!--&lt;!&ndash;-->
-                <!--Only really needed for the antrun plugin defined below (which in turn is only really needed-->
-                <!--to work around a missing feature on the compile plugin; lovely no?).  However I have not-->
-                <!--found a way to declare this dependency local to the antrun plugin and then reference it-->
-                <!--from the <javac />'s <classpath /> :(-->
-            <!--&ndash;&gt;-->
-            <!--<groupId>${project.groupId}</groupId>-->
-            <!--<artifactId>hibernate-jpamodelgen</artifactId>-->
-            <!--<version>1.0.0.Final</version>-->
-            <!--<scope>test</scope>-->
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<groupId>org.hibernate.javax.persistence</groupId>-->
-                    <!--<artifactId>hibernate-jpa-2.0-api</artifactId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
-        <!--</dependency>-->
+        <dependency>
+            <!--
+                Only really needed for the antrun plugin defined below (which in turn is only really needed
+                to work around a missing feature on the compile plugin; lovely no?).  However I have not
+                found a way to declare this dependency local to the antrun plugin and then reference it
+                from the <javac />'s <classpath /> :(
+            -->
+            <groupId>${project.groupId}</groupId>
+            <artifactId>hibernate-jpamodelgen</artifactId>
+            <version>1.0.0.Final</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hibernate.javax.persistence</groupId>
+                    <artifactId>hibernate-jpa-2.0-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <build>
@@ -72,35 +72,35 @@
             </testResource>
         </testResources>
         <plugins>
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-antrun-plugin</artifactId>-->
-                <!--<version>1.3</version>-->
-                <!--&lt;!&ndash; Define one configuration outside executions and without a phase in order to allow 'mvn antrun:run' &ndash;&gt;-->
-                <!--<configuration>-->
-                    <!--<tasks>-->
-                        <!--<property name="target.dir" value="${project.build.directory}/generated-src/jpamodelgen"/>-->
-                        <!--<property name="src.dir" value="${project.build.sourceDirectory}"/>-->
-                        <!--<property name="classpath" refid="maven.test.classpath"/>-->
-                        <!--<ant antfile="${basedir}/build.xml">-->
-                            <!--<target name="generate-metamodel"/>-->
-                        <!--</ant>-->
-                    <!--</tasks>-->
-                <!--</configuration>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>process_annotations</id>-->
-                        <!--<phase>process-test-sources</phase>-->
-                        <!--<configuration>-->
-                            <!--&lt;!&ndash; No additional configuration needed. Unbound configuration gets inherited. (Feels wrong, but that's how it is) &ndash;&gt;-->
-                            <!--<testSourceRoot>${project.build.directory}/generated-src/jpamodelgen</testSourceRoot>-->
-                        <!--</configuration>-->
-                        <!--<goals>-->
-                            <!--<goal>run</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.3</version>
+                <!-- Define one configuration outside executions and without a phase in order to allow 'mvn antrun:run' -->
+                <configuration>
+                    <tasks>
+                        <property name="target.dir" value="${project.build.directory}/generated-src/jpamodelgen"/>
+                        <property name="src.dir" value="${project.build.sourceDirectory}"/>
+                        <property name="classpath" refid="maven.test.classpath"/>
+                        <ant antfile="${basedir}/build.xml">
+                            <target name="generate-metamodel"/>
+                        </ant>
+                    </tasks>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>process_annotations</id>
+                        <phase>process-test-sources</phase>
+                        <configuration>
+                            <!-- No additional configuration needed. Unbound configuration gets inherited. (Feels wrong, but that's how it is) -->
+                            <testSourceRoot>${project.build.directory}/generated-src/jpamodelgen</testSourceRoot>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -108,7 +108,7 @@
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
-                    <!--<compilerArgument>-proc:none</compilerArgument>-->
+                    <compilerArgument>-proc:none</compilerArgument>
                 </configuration>
             </plugin>
             <plugin>
