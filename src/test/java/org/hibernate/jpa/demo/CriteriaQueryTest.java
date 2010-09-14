@@ -52,7 +52,7 @@ public class CriteriaQueryTest extends TestCase {
 		entityManagerFactory.close();
 	}
 
-	public void testBasicUsage() {
+	public void testBasicCriteriaQuery() {
 		// let's pull events from the database and list them
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
@@ -62,6 +62,27 @@ public class CriteriaQueryTest extends TestCase {
 		assertTrue( result.size() == 1 );
 		for ( Event event : result ) {
 			log.debug( "Event (" + event.getDate() + ") : " + event.getTitle() );
+		}
+
+		entityManager.getTransaction().commit();
+		entityManager.close();
+	}
+
+	public void testTypeSafeCriteria() {
+		// let's do a type safe criteria query
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		entityManager.getTransaction().begin();
+
+		CriteriaBuilder queryBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Event> query = queryBuilder.createQuery( Event.class );
+		Root<Event> event = query.from( Event.class );
+		query.where( queryBuilder.like( event.get( Event_.title ), "%follow%" ) );
+
+
+		List<Event> events = entityManager.createQuery( query ).getResultList();
+		assertTrue( events.size() == 1 );
+		for ( Event resultEvent : events ) {
+			log.debug( "Event (" + resultEvent.getDate() + ") : " + resultEvent.getTitle() );
 		}
 
 		entityManager.getTransaction().commit();
@@ -86,27 +107,6 @@ public class CriteriaQueryTest extends TestCase {
 		for ( Event event : result ) {
 			entityManager.remove( event );
 		}
-		entityManager.getTransaction().commit();
-		entityManager.close();
-	}
-
-	public void testTypeSafeCriteriaApi() {
-		// let's do a type safe criteria query
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-		entityManager.getTransaction().begin();
-
-		CriteriaBuilder queryBuilder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<Event> query = queryBuilder.createQuery( Event.class );
-		Root<Event> event = query.from( Event.class );
-		query.where( queryBuilder.like( event.get( Event_.title ), "%follow%" ) );
-
-
-		List<Event> events = entityManager.createQuery( query ).getResultList();
-		assertTrue( events.size() == 1 );
-		for ( Event resultEvent : events ) {
-			log.debug( "Event (" + resultEvent.getDate() + ") : " + resultEvent.getTitle() );
-		}
-
 		entityManager.getTransaction().commit();
 		entityManager.close();
 	}
