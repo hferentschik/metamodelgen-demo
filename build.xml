@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <project name="JPA 2 Demo" basedir=".">
 
+    <!-- Just an example on how Ant integration could look like --> 
     <target name="generate-metamodel" depends="uptodate.check" unless="metamodel.build.notRequired">
         <echo>Processing JPA annotations for metamodel generation</echo>
         <mkdir dir="${target.dir}"/>
