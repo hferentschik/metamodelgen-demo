@@ -67,4 +67,13 @@ public class PrintJob {
 	public int hashCode() {
 		return id;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder();
+		sb.append( "PrintJob" );
+		sb.append( "{id=" ).append( id );
+		sb.append( '}' );
+		return sb.toString();
+	}
 }

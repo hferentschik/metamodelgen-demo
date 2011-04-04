@@ -72,12 +72,14 @@ public class OrderColumnTest extends TestCase {
 		em.getTransaction().begin();
 		List<PrintQueue> list = em.createQuery( "from PrintQueue", PrintQueue.class ).getResultList();
 		assertTrue( list.size() == 1 );
+
 		queue = list.get( 0 );
+		assertTrue( queue.getJobs().size() == 2 );
 
 		PrintJob job3 = new PrintJob();
 		job3.setQueue( queue );
 		queue.getJobs().add( 0, job3 );
 
-		em.getTransaction().commit();		
+		em.getTransaction().commit();
 	}
 }

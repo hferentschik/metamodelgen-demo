@@ -63,4 +63,14 @@ public class PrintQueue {
 	public void setJobs(List<PrintJob> jobs) {
 		this.jobs = jobs;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder();
+		sb.append( "PrintQueue" );
+		sb.append( "{name='" ).append( name ).append( '\'' );
+		sb.append( ", jobs=" ).append( jobs );
+		sb.append( '}' );
+		return sb.toString();
+	}
 }
